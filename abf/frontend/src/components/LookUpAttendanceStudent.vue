@@ -64,30 +64,34 @@ export default {
   methods:{
     handleClick:function(value){
       this.isClick=true
-    //   this.$http
-    //   .get("http://203.233.111.7:5050/get_ledger")
-    //   .then(response => {
-    //     this.temp = 0;
-    //     for(var i=0; i<response.data.length; i++){
-    //       if(value.code==response.data[i].Record.verifier){
-    //         this.dataDetailTable[this.temp] = {
-    //           code : response.data[i].Record.verifier,
-    //           room : response.data[i].Record.device,
-    //           student : response.data[i].Record.user,
-    //           date : response.data[i].Record.date,
-    //           time : response.data[i].Record.timestamp,
-    //           check : response.data[i].Record.result
-    //         }
-    //         this.temp=this.temp+1
-    //       }
-    //       if(i==response.data.length-1){
-    //         this.detailLoading=false
-    //       }
-    //     }
-    //   })
-    //   .catch(err => {
-    //     alert("connection error occured");
-    //   });
+      console.log(response)
+      this.$http
+      .get("http://203.233.111.7:5050/get_ledger")
+      .then(response => { 
+        this.temp = 0;
+        for(var i=0; i<response.data.length; i++){
+          if(response.data[i].verifier){
+          if(value.code==response.data[i].Record.verifier){
+            this.dataDetailTable[this.temp] = {
+              code : response.data[i].Record.verifier,
+              room : response.data[i].Record.device,
+              student : response.data[i].Record.user,
+              date : response.data[i].Record.date,
+              time : response.data[i].Record.timestamp,
+              check : response.data[i].Record.result
+            }
+            this.temp=this.temp+1
+          }
+          }
+          if(i==response.data.length-1){
+            this.detailLoading=false
+          }
+        }
+      })
+      
+      .catch(err => {
+        alert("connection error occured");
+      });
     },
     back:function(){
       this.isClick=false
