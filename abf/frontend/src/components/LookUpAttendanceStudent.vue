@@ -64,13 +64,13 @@ export default {
   methods:{
     handleClick:function(value){
       this.isClick=true
-      console.log(response)
       this.$http
       .get("http://203.233.111.7:5050/get_ledger")
       .then(response => { 
         this.temp = 0;
         for(var i=0; i<response.data.length; i++){
-          if(response.data[i].verifier){
+          if(response.data[i])
+          {
           if(value.code==response.data[i].Record.verifier){
             this.dataDetailTable[this.temp] = {
               code : response.data[i].Record.verifier,
