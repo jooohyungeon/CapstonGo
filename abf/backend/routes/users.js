@@ -86,17 +86,21 @@ router.post('/fileUpload', function (req, res, next) {
     password: "qwer1234",
   })
   .then(response => {
-    return sftp.put(ClientPath[0]+'/'+ req.body.fileName , '/home/aham/hyungeon/' + req.body.fileName);
+    return sftp.put(ClientPath[0]+'/'+ req.body.contents , '/home/aham/hyungeon/' + req.body.fileName);
   })
   .then(() => {
     sftp.end();
-    res.send("upload success")
+    connection.query('INSERT INTO abf.modify_attendence (user_id,class_id,request_date,modify_date,contents,result) VALUES ("'+req.body.user_id+'","'+req.body.class_id+'","'+req.body.request_date+'","'+req.body.modify_date+'","'+req.body.contents+'","'+req.body.result+'");', function (err, result) {
+      res.send("upload success")
+    })
+    .catch(err => {
+      res.send("upload fail")
+    })
   })
   .catch(err => {
     console.error(err.message)
   })
 
 });
-
 module.exports = router;
 

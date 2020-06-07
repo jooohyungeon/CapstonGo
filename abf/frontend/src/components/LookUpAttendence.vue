@@ -75,8 +75,17 @@ export default {
               time : response.data[i].Record.timestamp,
               check : response.data[i].Record.result
             }
+            this.dataDetailTable.sort(function(a,b){
+            return a.date < b.date ? -1: a.date>b.date? 1 : 0;
+          }
+          )
+          this.dataDetailTable.sort(function(a,b){
+            return a.student < b.student ? -1: a.student>b.student? 1 : 0;
+          }
+          )
             this.temp=this.temp+1
           }
+          
           if(i==response.data.length-1){
             this.detailLoading=false
           }
