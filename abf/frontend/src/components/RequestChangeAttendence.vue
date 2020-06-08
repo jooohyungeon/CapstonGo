@@ -2,7 +2,8 @@
   <div class="LookUpAttendence">
     <v-card class="ma-12" max-width="1000" outlined v-if="loading==false">
       <v-flex v-if="isClick==false">
-        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" class="elevation-1" @click:row="handleClick">
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
+        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="search" class="elevation-1" @click:row="handleClick">
         </v-data-table>
       </v-flex>
       <v-flex v-else-if="isClick==true&&detailLoading==false">
@@ -34,7 +35,7 @@
       </v-flex>
     </v-card>
     <v-card v-else-if="loading==true">
-      로딩 중
+      <v-img src="../assets/loading.gif" width="160"/>
     </v-card>
     
   </div>
@@ -49,6 +50,7 @@ export default {
   },
   data () {
     return {
+      search:'',
       modifyDay:"",
       files: [],
       temp:0,
@@ -103,7 +105,7 @@ export default {
       var date = new Date();
       this.$http
         .post("/api/users/fileUpload",{
-          user_id:this.$store.state.SetInfo.info.user_id,
+          user_id:this.$store.state.SetInfo.info.member_id,
           class_id:this.clickedLectureInfo.code,
           request_date: date.format('yyyy-MM-dd'),
           modify_date:this.modifyDay,

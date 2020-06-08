@@ -2,17 +2,19 @@
   <div class="LookUpAttendence">
     <v-card class="ma-12" max-width="1000" outlined v-if="loading==false">
       <v-flex v-if="isClick==false">
-        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" class="elevation-1" @click:row="handleClick">
+        <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
+        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="search" class="elevation-1" @click:row="handleClick">
         </v-data-table>
       </v-flex>
       <v-flex v-else-if="isClick==true&&detailLoading==false">
-        <v-data-table :headers="detailHeaders" :items="dataDetailTable" :items-per-page="5" class="elevation-2">
+        <v-text-field v-model="searchDetail" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
+        <v-data-table :headers="detailHeaders" :items="dataDetailTable" :items-per-page="5" :search="searchDetail" class="elevation-2">
         </v-data-table>
-        <v-btn class="mt-6" @click="back">뒤로 가기</v-btn>
+        <v-btn class="ma-6" @click="back" color="primary">뒤로 가기</v-btn>
       </v-flex>
     </v-card>
     <v-card v-else-if="loading==true">
-      로딩 중
+      <v-img src="../assets/loading.gif" width="160"/>
     </v-card>
   </div>
 </template>
@@ -24,6 +26,8 @@ export default {
   },
   data () {
     return {
+      search: '',
+      searchDetail:'',
       temp:0,
       headers: [
         {

@@ -11,12 +11,12 @@
     <v-tabs-items v-model="tab">
         <v-tab-item v-for="item in items" :key="item.tab">
             <v-card flat>
-            <v-container v-if="item.tab=='출결 현황 조회'" class="ma-0 pa-0">
-                <LookUpAttendanceProf></LookUpAttendanceProf>
-            </v-container>
-            <v-container v-else-if="item.tab=='출결 변경'" class="ma-0 pa-0">
-                <ChangeAttendenceProf></ChangeAttendenceProf>
-            </v-container>
+              <v-container v-if="item.tab=='출결 현황 조회'" class="ma-0 pa-0">
+                  <LookUpAttendanceProf></LookUpAttendanceProf>
+              </v-container>
+              <v-container v-else-if="item.tab=='출결 변경'" class="ma-0 pa-0">
+                  <ChangeAttendenceProf></ChangeAttendenceProf>
+              </v-container>
             </v-card>
         </v-tab-item>
         </v-tabs-items>

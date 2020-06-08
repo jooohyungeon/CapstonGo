@@ -6,7 +6,6 @@ var router = express.Router();
 router.post('/', function (req, res, next) {
     console.log(req.body)
     axios.post('http://192.168.0.2:5050/recognize_face', {
-        member_id: req.body.ID,
         class_id: req.body.class_id,
         date_id: req.body.date_id,
     })
@@ -27,48 +26,47 @@ router.post('/lecture_info', function (req, res, next) {
 });
 
 router.post('/attedance_all_fail', function (req, res, next) {
-    console.log(req.body.class_id,"여기야여기")
     connection.query("SELECT * FROM abf.apply where class_id='"+req.body.class_id+"'", function (err, result) {
         if (err) throw err;
         
         if(result.length==0){
-            console.log(result,"??")
             res.send("데이터 없음")
         }
-        console.log(result)
-        for(var i=0; i<result.length; i++){
-            if(i!=result.length-1){
-                axios.post('http://203.233.111.7:5050/push_ledger',{
-                    "device_id": "409",
-                    "user_id": result[i].member_id,
-                    "verifier_id": result[i].class_id,
-                    "result": "Fail",
-                    "date": req.body.date
-                })
-                .then(response => {
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            }
-            else{
-                axios.post('http://203.233.111.7:5050/push_ledger',{
-                    "device_id": "409",
-                    "user_id": result[i].member_id,
-                    "verifier_id": result[i].class_id,
-                    "result": "Fail",
-                    "date": req.body.date
-                })
-                .then(response => {
-                    res.send(response.data)
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-            }
+        else{
+            res.send(result)
         }
+        // for(var i=0; i<result.length; i++){
+        //     if(i!=result.length-1){
+        //         axios.post('http://203.233.111.7:5050/push_ledger',{
+        //             "device_id": "409",
+        //             "user_id": result[i].member_id,
+        //             "verifier_id": result[i].class_id,
+        //             "result": "Fail",
+        //             "date": req.body.date
+        //         })
+        //         .then(response => {
+        //         })
+        //         .catch(function (error) {
+        //             console.log(error);
+        //         });
+        //     }
+        //     else{
+        //         axios.post('http://203.233.111.7:5050/push_ledger',{
+        //             "device_id": "409",
+        //             "user_id": result[i].member_id,
+        //             "verifier_id": result[i].class_id,
+        //             "result": "Fail",
+        //             "date": req.body.date
+        //         })
+        //         .then(response => {
+        //             res.send(response.data)
+        //         })
+        //         .catch(function (error) {
+        //             console.log(error);
+        //         });
+        //     }
+        // }
     })
-    
 });
 
 module.exports = router;

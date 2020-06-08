@@ -15,7 +15,6 @@
     "morgan": "~1.9.1",
     "mysql": "2.18.1",
     "pug": "2.0.0-beta11",
-    "ssh2-sftp-client": "^5.1.2",
-    "yarn": "^1.22.4"
+    "ssh2-sftp-client": "^5.1.2"
   }
 }

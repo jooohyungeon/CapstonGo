@@ -49,9 +49,6 @@
         <v-flex style="text-align:center;">
           <p style="font-weight:bold">{{$moment(time).format('YYYY년 MM월 DD일 HH시 mm분')}}</p>
         </v-flex>
-         <div class="form-group">
-          <input v-model="ID"/>
-        </div>
         <v-flex class="form-group" dark>
           <button @click="Attendance">출석</button>
         </v-flex>
@@ -87,7 +84,6 @@ export default {
   },
   data: () => ({
     time: '',
-    ID:'',
 
     member_id:'',
     name:'',
@@ -102,7 +98,6 @@ export default {
     Attendance:function(){
       this.$http
         .post("/api/check", {
-          ID:this.ID,
           class_id:this.class_id,
           date_id:(this.time).format('yyyy-MM-dd'),
         })
@@ -156,23 +151,11 @@ export default {
         })
         .then(response => {
           var lecture_info = response.data[0]
+          console.log(lecture_info)
           if(lecture_info!=undefined){
-            if(this.class_id!=lecture_info.class_id){
-              this.$http
-                .post("/api/check/attedance_all_fail", {
-                  class_id:response.data[0].class_id,
-                  date:date.format('yyyy-MM-dd'),
-                })
-                .then(response => {
-                  this.prof_id = lecture_info.prof_id
-                  this.class_name = lecture_info.class_name
-                  this.class_id = lecture_info.class_id
-                })
-                .catch(err => {
-                  alert("connection error occured");
-                });
-            }
-            
+            this.prof_id = lecture_info.prof_id
+            this.class_name = lecture_info.class_name
+            this.class_id = lecture_info.class_id
           }
           else{
             this.prof_id = 'XXX'

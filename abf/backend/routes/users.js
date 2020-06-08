@@ -74,6 +74,13 @@ router.get('/apply', function (req, res, next) {
 
 });
 
+router.get('/modify_attendance', function (req, res, next) {
+  connection.query('SELECT * FROM abf.modify_attendence', function (err, result) {
+    res.send(result)
+  })
+
+});
+
 let client = require("ssh2-sftp-client")
 router.post('/fileUpload', function (req, res, next) {
   var ClientPath=__dirname
@@ -86,21 +93,75 @@ router.post('/fileUpload', function (req, res, next) {
     password: "qwer1234",
   })
   .then(response => {
-    return sftp.put(ClientPath[0]+'/'+ req.body.contents , '/home/aham/hyungeon/' + req.body.fileName);
+    
+    return sftp.put(ClientPath[0]+'/'+ req.body.contents , '/home/aham/hyungeon/abf/file/' + req.body.contents);
   })
   .then(() => {
-    sftp.end();
     connection.query('INSERT INTO abf.modify_attendence (user_id,class_id,request_date,modify_date,contents,result) VALUES ("'+req.body.user_id+'","'+req.body.class_id+'","'+req.body.request_date+'","'+req.body.modify_date+'","'+req.body.contents+'","'+req.body.result+'");', function (err, result) {
+      sftp.end();
       res.send("upload success")
     })
     .catch(err => {
+      sftp.end();
       res.send("upload fail")
     })
   })
   .catch(err => {
+    sftp.end();
     console.error(err.message)
   })
 
 });
+
+router.post('/download_file', function (req, res, next) {
+
+  fs.mkdir("C:/CapstonGoFile", err => {
+    if (err && err.code != 'EEXIST') throw 'up'
+    console.log("Already Exists")
+  })
+
+
+  var ClientPath=__dirname
+  ClientPath = ClientPath.split('abf\\backend\\routes');
+
+  let sftp = new client();
+  let Path = '/home/aham/hyungeon/abf/file/'
+
+  sftp.connect({
+    host: "203.233.111.5",
+    port: 22,
+    username: "aham",
+    password: "qwer1234",
+  }).then(data => {
+    try{
+      sftp.get(Path + req.body.filename, fs.createWriteStream("C:/CapstonGoFile/"+req.body.filename))
+    }
+    catch(err){
+      console.error(err)
+    }
+  }).then(() => {
+    res.send("success")
+  })
+});
+
+router.post('/confirm', function (req, res, next) {
+  connection.query('UPDATE abf.modify_attendence SET confirm_date = "'+req.body.confirm_date+'", result ="apporve" WHERE user_id = "'+req.body.user_id+'" and class_id = "'+req.body.class_id+'" and modify_date = "'+req.body.modify_date+'";', function (err, result) {
+    axios.post('http://203.233.111.7:5050/push_ledger',{
+      "device_id": "409",
+      "user_id":  req.body.user_id,
+      "verifier_id": req.body.class_id,
+      "result": "Success",
+      "date": req.body.modify_date
+    })
+    .then(response => {
+      res.send("success")
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.send("fail")
+    });
+  })
+});
+
 module.exports = router;
 
