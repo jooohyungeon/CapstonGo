@@ -64,53 +64,6 @@ export default {
   methods:{
     handleClick:function(value){
       this.isClick=true
-      
-          var count=0
-          var count1=0
-          function date_add(sDate, nDays) 
-          {
-           var yy = parseInt(sDate.substr(0, 4), 10);
-           var mm = parseInt(sDate.substr(5, 2), 10);
-           var dd = parseInt(sDate.substr(8), 10);
-           var d = new Date(yy, mm - 1, dd + nDays);
-            yy = d.getFullYear();
-            mm = d.getMonth() + 1; mm = (mm < 10) ? '0' + mm : mm;
-            dd = d.getDate(); dd = (dd < 10) ? '0' + dd : dd;
-            return '' + yy + '-' +  mm  + '-' + dd;
-          }
-//           for(var i=0; i<16; i++)
-//           {this.$http
-//           .post("http://203.233.111.7:5050/push_ledger",{
-//             device_id:"409",
-//             user_id:"201421004",
-//             verifier_id:"F068",
-//             date:date_add("2020-03-16",count),
-//             result:"Fail"
-//           }).then(response => {
-//             console.log(response,"test")
-//           }) 
-//           .catch(err => {
-//             alert("connection error occured");
-//           });
-//           count += 7;
-//           }
-// 		for(var i=0; i<16; i++)
-//           {this.$http
-//           .post("http://203.233.111.7:5050/push_ledger",{
-//             device_id:"409",
-//             user_id:"201421004",
-//             verifier_id:"F068",
-//             date:date_add("2020-03-18",count1),
-//             result:"Fail"
-//           }).then(response => {
-//             console.log(response,"test")
-//           }) 
-//           .catch(err => {
-//             alert("connection error occured");
-//           });
-//           count1 += 7;
-//           }
-
       this.$http
       .get("http://203.233.111.7:5050/get_ledger")
       .then(response => {
@@ -128,8 +81,9 @@ export default {
               time : response.data[i].Record.timestamp,
               check : response.data[i].Record.result
             }
-            }
             this.temp=this.temp+1
+            }
+            
           }
           if(i==response.data.length-1){
             this.detailLoading=false
