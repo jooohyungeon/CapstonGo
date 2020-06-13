@@ -8,14 +8,14 @@
         <div class="form-content">
             <div class="form-group">
               <label for="username">ID</label>
-              <input v-model="ID"/>
+              <input @keyup.enter="LogIn" v-model="ID"/>
             </div>
             <div class="form-group">
               <label for="password">Password</label>
-              <input type="password" v-model="password"/>
+              <input type="password" @keyup.enter="LogIn" v-model="password"/>
             </div>
             <div class="form-group">
-              <button @click="LogIn">Log In</button>
+              <button @click="LogIn"  >Log In</button>
             </div>
             <div class="form-group">
               <button @click="SignUp">Sign Up</button>
@@ -131,6 +131,7 @@ export default {
     SignUp:function(){
       this.isSignUp=true
     },
+
     SendSignInfo:function(){
       this.$http
         .post("/api/users/SignUp", {

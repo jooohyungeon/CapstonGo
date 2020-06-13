@@ -8,6 +8,12 @@
       </v-flex>
       <v-flex v-else-if="isClick==true&&detailLoading==false">
         <v-text-field v-model="searchDetail" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
+        <v-data-table :headers="detailHeaders" :items="response.data[i].Record.date" :items-per-page="5" :search="searchDetail" class="elevation-2">
+        </v-data-table>
+        <v-btn class="ma-6" @click="back" color="primary">뒤로 가기</v-btn>
+        </v-flex>
+      <v-flex v-else-if="isClick==true&&detailLoading==false">
+        <v-text-field v-model="searchDetail" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
         <v-data-table :headers="detailHeaders" :items="dataDetailTable" :items-per-page="5" :search="searchDetail" class="elevation-2">
         </v-data-table>
         <v-btn class="ma-6" @click="back" color="primary">뒤로 가기</v-btn>
