@@ -6,11 +6,16 @@
         <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="search" class="elevation-1" @click:row="handleClick">
         </v-data-table>
       </v-flex>
-      <v-flex v-else-if="isClick==true&&detailLoading==false">
-        <v-text-field v-model="searchDetail" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
-        <v-data-table :headers="detailHeaders" :items="dataDetailTable" :items-per-page="5" :search="searchDetail" class="elevation-2">
-        </v-data-table>
+      <v-flex v-else-if="isClick==true&&detailLoading==false&&isdatePicked==false">
+        <v-date-picker full-width  v-model="date" :allowed-dates="allowedDates" @click:date="dateClicked" max="2020-07-03"> 
+        </v-date-picker>
         <v-btn class="ma-6" @click="back" color="primary">뒤로 가기</v-btn>
+      </v-flex>
+      <v-flex v-else-if="isdatePicked==true&&detailLoading==false">
+        <v-text-field v-model="searchDetail" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
+        <v-data-table :headers="detailHeaders" :items="dataDetailTable" :items-per-page="5" :search="searchDetail" class="elevation-2" v-if="dataDetailTable!=[]">
+        </v-data-table>
+        <v-btn class="ma-6" @click="back1" color="primary">뒤로 가기</v-btn>
       </v-flex>
     </v-card>
     <v-card v-else-if="loading==true">
@@ -20,12 +25,18 @@
 </template>
 
 <script>
+var datestore = "123"
+var week = ['일', '월', '화', '수', '목', '금', '토'];
 export default {
   name: 'LookUpAttendanceStudent',
   components: {
   },
   data () {
     return {
+      isdatePicked:false,
+      valueStore:'',
+      stringDate:'',
+      date:'',
       search: '',
       searchDetail:'',
       temp:0,
@@ -40,6 +51,7 @@ export default {
         { text: '담당교수', value: 'prof' },
         { text: '강의실', value: 'room' },
         { text: '강의시간', value: 'time' },
+        { text: '강의 요일', value: 'date'},
       ],
       dataTable: [],
       loading:true,
@@ -67,31 +79,46 @@ export default {
   methods:{
     handleClick:function(value){
       this.isClick=true
+      this.valueStore=value
+      this.detailLoading=false
+      datestore=value.date
+    },
+    allowedDates: (value) => datestore.indexOf(week[new Date(value).getDay()]) != -1,
+    back:function(){
+      this.isClick=false
+      this.detailLoading=true
+      this.dataDetailTable=[]
+      this.isdatePicked=false
+    },
+    dateClicked:function(valueStore){
+      this.isdatePicked=true
+      this.dataDetailTable=[]
       this.$http
       .get("http://203.233.111.7:5050/get_ledger")
       .then(response => {
         this.$http
         .get("/api/users/apply")
         .then(responseApply => {
-          var index = 0;
           this.temp = 0;
+          var index = 0;
           for(var i=0; i<response.data.length; i++){
-            if(value.code==response.data[i].Record.verifier){
-              for(index=0; index<responseApply.data.length; index++){
-                if(response.data[i].Record.user==responseApply.data[index].member_id){
-                  break;
+            if(this.valueStore.code==response.data[i].Record.verifier){
+              if(this.date==response.data[i].Record.date){
+                for(index=0; index<responseApply.data.length; index++){
+                  if(response.data[i].Record.user==responseApply.data[index].member_id){
+                    break;
+                  }
                 }
+                this.$set(this.dataDetailTable, this.temp, {
+                  code : response.data[i].Record.verifier,
+                  student : response.data[i].Record.user,
+                  name : responseApply.data[index].name,
+                  date : response.data[i].Record.date,
+                  time : response.data[i].Record.timestamp,
+                  check : response.data[i].Record.result
+                })
+                this.temp=this.temp+1
               }
-
-              this.dataDetailTable[this.temp] = {
-                code : response.data[i].Record.verifier,
-                student : response.data[i].Record.user,
-                name : responseApply.data[index].name,
-                date : response.data[i].Record.date,
-                time : response.data[i].Record.timestamp,
-                check : response.data[i].Record.result
-              }
-              this.temp=this.temp+1
             }
             if(i==response.data.length-1){
               this.detailLoading=false
@@ -106,10 +133,10 @@ export default {
         alert("connection error occured2222");
       });
     },
-    back:function(){
-      this.isClick=false
-      this.detailLoading=true
-      this.dataDetailTable=[]
+    back1:function(){
+      this.isClick=true
+      this.detailLoading=false
+      this.isdatePicked=false
     },
   },
   beforeCreate(){
@@ -129,7 +156,8 @@ export default {
                 code : this.lectureInfo[i].class_id,
                 prof : this.lectureInfo[i].prof_id,
                 room : this.lectureInfo[i].class_room,
-                time : this.lectureInfo[i].class_starttime
+                time : this.lectureInfo[i].class_starttime,
+                date : this.lectureInfo[i].class_date
             }
         }
         this.loading=false
