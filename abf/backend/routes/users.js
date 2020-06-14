@@ -146,15 +146,28 @@ router.post('/download_file', function (req, res, next) {
 
 router.post('/confirm', function (req, res, next) {
   connection.query('UPDATE abf.modify_attendence SET confirm_date = "'+req.body.confirm_date+'", result ="apporve" WHERE user_id = "'+req.body.user_id+'" and class_id = "'+req.body.class_id+'" and modify_date = "'+req.body.modify_date+'";', function (err, result) {
-    axios.post('http://203.233.111.7:5050/push_ledger',{
-      "device_id": "409",
-      "user_id":  req.body.user_id,
-      "verifier_id": req.body.class_id,
-      "result": "Success",
-      "date": req.body.modify_date
-    })
+    axios.get('http://203.233.111.7:5050/get_ledger')
     .then(response => {
-      res.send("success")
+      for(var i=0; i<response.data.length; i++){
+        if(req.body.modify_date==response.data[i].Record.date){
+          if(req.body.user_id==response.data[i].Record.user){
+            if(req.body.class_id==response.data[i].Record.verifier){
+              console.log(response.data[i].key)
+              axios.post('http://203.233.111.7:5050/update_ledger',{
+                key:response.data[i].key,
+                result:'Success'
+              })
+              .then(response => {
+                res.send("success")
+              })
+              .catch(function (error) {
+                console.log(error);
+                res.send("fail")
+              });
+            }
+          }
+        }
+      }
     })
     .catch(function (error) {
       console.log(error);
