@@ -81,7 +81,7 @@ router.get('/modify_attendance', function (req, res, next) {
 
 });
 
-let client = require("ssh2-sftp-client")
+let client = require("ssh2-sftp-client");
 router.post('/fileUpload', function (req, res, next) {
   var ClientPath=__dirname
   ClientPath = ClientPath.split('\\abf\\backend\\routes');
@@ -93,7 +93,6 @@ router.post('/fileUpload', function (req, res, next) {
     password: "qwer1234",
   })
   .then(response => {
-    
     return sftp.put(ClientPath[0]+'/'+ req.body.contents , '/home/aham/hyungeon/abf/file/' + req.body.contents);
   })
   .then(() => {
@@ -101,14 +100,15 @@ router.post('/fileUpload', function (req, res, next) {
       sftp.end();
       res.send("upload success")
     })
-    .catch(err => {
-      sftp.end();
-      res.send("upload fail")
-    })
+    // .catch(err => {
+    //   sftp.end();
+    //   res.send("upload fail")
+    // })
   })
   .catch(err => {
     sftp.end();
     console.error(err.message)
+    res.send("upload fail")
   })
 
 });

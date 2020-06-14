@@ -44,7 +44,6 @@ export default {
     return {
       isdatePicked:false,
       valueStore:'',
-      stringDate:'',
       date:'',
       searchSubj: '',
       searchProf: '',

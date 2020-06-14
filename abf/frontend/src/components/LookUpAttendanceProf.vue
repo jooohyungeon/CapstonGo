@@ -35,7 +35,6 @@ export default {
     return {
       isdatePicked:false,
       valueStore:'',
-      stringDate:'',
       date:'',
       search: '',
       searchDetail:'',

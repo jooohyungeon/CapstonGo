@@ -105,6 +105,7 @@ export default {
               }
 
               this.dataDetailTable[this.temp] = {
+                code : response.data[i].class_id,
                 student : response.data[i].user_id,
                 name : responseApply.data[index].name,
                 request : response.data[i].request_date,
