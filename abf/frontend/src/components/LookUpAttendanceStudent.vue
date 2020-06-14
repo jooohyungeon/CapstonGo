@@ -2,8 +2,17 @@
   <div class="LookUpAttendence">
     <v-card class="ma-12" max-width="1000" outlined v-if="loading==false">
       <v-flex v-if="isClick==false">
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
-        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="search" class="elevation-1" @click:row="handleClick">
+        <v-layout row>
+          <v-flex style="padding-left:12px">
+            <v-text-field v-model="searchSubj" append-icon="mdi-magnify" label="교과목명" style="width:75%;" class="ml-3"></v-text-field>
+          </v-flex>
+          <v-flex>
+            <v-text-field v-model="searchProf" append-icon="mdi-magnify" label="담당교수" style="width:75%;" class="ml-3"></v-text-field>
+          </v-flex>
+          <v-flex>
+          </v-flex>
+        </v-layout>
+        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="searchSubj||searchProf" class="elevation-1" @click:row="handleClick">
         </v-data-table>
       </v-flex>
       <v-flex v-else-if="isClick==true&&detailLoading==false">
@@ -26,7 +35,8 @@ export default {
   },
   data () {
     return {
-      search: '',
+      searchSubj: '',
+      searchProf: '',
       searchDetail:'',
       temp:0,
       headers: [
@@ -52,8 +62,8 @@ export default {
           sortable: false,
           value: 'code',
         },
-        { text: '강의실', value: 'room' },
-        { text: '학생', value: 'student' },
+        { text: '이름', value: 'name' },
+        { text: '학번', value: 'student' },
         { text: '날짜', value: 'date' },
         { text: '출석 시간', value: 'time' },
         { text: '출석 여부', value: 'check' },
@@ -71,29 +81,42 @@ export default {
       this.$http
       .get("http://203.233.111.7:5050/get_ledger")
       .then(response => {
-        this.temp = 0;
-        for(var i=0; i<response.data.length; i++){
-          if(value.code==response.data[i].Record.verifier){
-            if(response.data[i].Record.user == this.$store.state.SetInfo.info.member_id){
-              this.dataDetailTable[this.temp] = {
-                code : response.data[i].Record.verifier,
-                room : response.data[i].Record.device,
-                student : response.data[i].Record.user,
-                date : response.data[i].Record.date,
-                time : response.data[i].Record.timestamp,
-                check : response.data[i].Record.result
-              }
-              this.temp=this.temp+1
-            }  
+        this.$http
+        .get("/api/users/apply")
+        .then(responseApply => {
+          var index = 0;
+          this.temp = 0;
+          for(var i=0; i<response.data.length; i++){
+            if(value.code==response.data[i].Record.verifier){
+              if(response.data[i].Record.user == this.$store.state.SetInfo.info.member_id){
+                for(index=0; index<responseApply.data.length; index++){
+                  if(this.$store.state.SetInfo.info.member_id==responseApply.data[index].member_id){
+                    break;
+                  }
+                }
+
+                this.dataDetailTable[this.temp] = {
+                  code : response.data[i].Record.verifier,
+                  student : response.data[i].Record.user,
+                  name : responseApply.data[index].name,
+                  date : response.data[i].Record.date,
+                  time : response.data[i].Record.timestamp,
+                  check : response.data[i].Record.result
+                }
+                this.temp=this.temp+1
+              }  
+            }
+            if(i==response.data.length-1){
+              this.detailLoading=false
+            }
           }
-          if(i==response.data.length-1){
-            this.detailLoading=false
-          }
-        }
+        })
+        .catch(err => {
+          alert("connection error occured1111")
+        });
       })
-      
       .catch(err => {
-        alert("connection error occured");
+        alert("connection error occured2222");
       });
     },
     

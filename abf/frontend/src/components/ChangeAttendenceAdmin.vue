@@ -2,8 +2,17 @@
   <div class="LookUpAttendence">
     <v-card class="ma-12" max-width="1000" outlined v-if="loading==false">
       <v-flex v-if="isClick==false">
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
-        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="search" class="elevation-1" @click:row="handleClick">
+        <v-layout row>
+          <v-flex style="padding-left:12px">
+            <v-text-field v-model="searchSubj" append-icon="mdi-magnify" label="교과목명" style="width:75%;" class="ml-3"></v-text-field>
+          </v-flex>
+          <v-flex>
+            <v-text-field v-model="searchProf" append-icon="mdi-magnify" label="담당교수" style="width:75%;" class="ml-3"></v-text-field>
+          </v-flex>
+          <v-flex>
+          </v-flex>
+        </v-layout>
+        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="searchSubj||searchProf" class="elevation-1" @click:row="handleClick">
         </v-data-table>
       </v-flex>
       <v-flex v-else-if="isClick==true&&detailLoading==false">
@@ -36,9 +45,9 @@ export default {
   },
   data () {
     return {
-      search:'',
+      searchSubj: '',
+      searchProf: '',
       searchDetail:'',
-      modifyDay:"",
       temp:0,
       headers: [
         {
@@ -58,14 +67,14 @@ export default {
       isClick:false,
       detailHeaders: [
         {
-          text: '과목코드',
+          text: '요청 날짜',
           align: 'start',
-          sortable: false,
-          value: 'code',
+          sortable: true,
+          value: 'request',
         },
-        { text: '학생', value: 'student' },
+        { text: '이름', value: 'name' },
+        { text: '학번', value: 'student' },
         { text: '변경 날짜', value: 'modify' },
-        { text: '요청 날짜', value: 'request' },
         { text: '승인 날짜', value: 'confirm_date' },
         { text: '증빙자료', value: 'content' },
         { text: '결과', value: 'result' },
@@ -82,28 +91,42 @@ export default {
       this.$http
       .get("api/users/modify_attendance")
       .then(response => {
-        this.temp = 0;
-        for(var i=0; i<response.data.length; i++){
-          if(value.code==response.data[i].class_id){
-            this.dataDetailTable[this.temp] = {
-              student : response.data[i].user_id,
-              code : response.data[i].class_id,
-              request : response.data[i].request_date,
-              modify : response.data[i].modify_date,
-              confirm_date : response.data[i].confirm_date,
-              content : response.data[i].contents,
-              result : response.data[i].result,
-              confirmer : response.data[i].confirmer_id
+        this.$http
+        .get("/api/users/apply")
+        .then(responseApply => {
+          var index = 0;
+          this.temp = 0;
+          for(var i=0; i<response.data.length; i++){
+            if(value.code==response.data[i].class_id){
+              for(index=0;index<responseApply.data.length; index++){
+                if(responseApply.data[index].member_id==response.data[i].user_id){
+                  break;
+                }
+              }
+
+              this.dataDetailTable[this.temp] = {
+                student : response.data[i].user_id,
+                name : responseApply.data[index].name,
+                request : response.data[i].request_date,
+                modify : response.data[i].modify_date,
+                confirm_date : response.data[i].confirm_date,
+                content : response.data[i].contents,
+                result : response.data[i].result,
+                confirmer : response.data[i].confirmer_id
+              }
+              this.temp=this.temp+1
             }
-            this.temp=this.temp+1
+            if(i==response.data.length-1){
+              this.detailLoading=false
+            }
           }
-          if(i==response.data.length-1){
-            this.detailLoading=false
-          }
-        }
+        })
+        .catch(err => {
+          alert("connection error occured1111")
+        });
       })
       .catch(err => {
-        alert("connection error occured");
+        alert("connection error occured2222");
       });
     },
     back:function(){

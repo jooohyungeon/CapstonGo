@@ -2,8 +2,17 @@
   <div class="LookUpAttendence">
     <v-card class="ma-12" max-width="1000" outlined v-if="loading==false">
       <v-flex v-if="isClick==false">
-        <v-text-field v-model="search" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
-        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="search" class="elevation-1" @click:row="handleClick">
+        <v-layout row>
+          <v-flex style="padding-left:12px">
+            <v-text-field v-model="searchSubj" append-icon="mdi-magnify" label="교과목명" style="width:75%;" class="ml-3"></v-text-field>
+          </v-flex>
+          <v-flex>
+            <v-text-field v-model="searchProf" append-icon="mdi-magnify" label="담당교수" style="width:75%;" class="ml-3"></v-text-field>
+          </v-flex>
+          <v-flex>
+          </v-flex>
+        </v-layout>
+        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="searchSubj||searchProf" class="elevation-1" @click:row="handleClick">
         </v-data-table>
       </v-flex>
       <v-flex v-else-if="isClick==true&&detailLoading==false">
@@ -50,7 +59,8 @@ export default {
   },
   data () {
     return {
-      search:'',
+      searchSubj: '',
+      searchProf: '',
       modifyDay:"",
       files: [],
       temp:0,
