@@ -48,7 +48,7 @@ router.post('/SignUp', function (req, res, next) {
 });
 
 router.post('/EnrollFace', function (req, res, next) {
-  axios.post('http://192.168.137.79:5050/regist_face', {
+  axios.post('http://192.168.0.112:5050/regist_face', {
     member_id:req.body.member_id,
   })
     .then(response => {

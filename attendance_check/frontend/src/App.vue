@@ -42,7 +42,7 @@
     <v-flex class="grey0form ml-1" md="2" columns>
 
       <v-flex>
-        <v-img src="http://192.168.137.79:8091/?action=stream" style="width:350px;"/>
+        <v-img src="http://192.168.0.112:8091/?action=stream" style="width:550px;"/>
       </v-flex>
 
       <v-flex align-self-center v-if="check=='now'">
@@ -141,6 +141,32 @@ export default {
       date = new Date();
       this.time = date
     }, 1000)
+
+    date = new Date();
+    this.time = date
+     this.$http
+        .post("/api/check/lecture_info", {
+          class_room:'409',
+          time:date.format('HH:mm:ss'),
+          date:date.format('KS'),
+        })
+        .then(response => {
+          var lecture_info = response.data[0]
+          console.log(lecture_info)
+          if(lecture_info!=undefined){
+            this.prof_id = lecture_info.prof_id
+            this.class_name = lecture_info.class_name
+            this.class_id = lecture_info.class_id
+          }
+          else{
+            this.prof_id = 'XXX'
+            this.class_name = 'XXX'
+            this.class_id = 'XXX'
+          }
+        })
+        .catch(err => {
+          alert("connection error occured");
+        });
     
     setInterval(() => {
       this.$http
@@ -166,7 +192,7 @@ export default {
         .catch(err => {
           alert("connection error occured");
         });
-    }, 5000)
+    }, 60000)
   }
 };
 
