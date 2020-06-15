@@ -48,7 +48,7 @@ router.post('/SignUp', function (req, res, next) {
 });
 
 router.post('/EnrollFace', function (req, res, next) {
-  axios.post('http://192.168.0.2:5050/regist_face', {
+  axios.post('http://192.168.137.79:5050/regist_face', {
     member_id:req.body.member_id,
   })
     .then(response => {
@@ -96,7 +96,7 @@ router.post('/fileUpload', function (req, res, next) {
     return sftp.put(ClientPath[0]+'/'+ req.body.contents , '/home/aham/hyungeon/abf/file/' + req.body.contents);
   })
   .then(() => {
-    connection.query('INSERT INTO abf.modify_attendence (user_id,class_id,request_date,modify_date,contents,result) VALUES ("'+req.body.user_id+'","'+req.body.class_id+'","'+req.body.request_date+'","'+req.body.modify_date+'","'+req.body.contents+'","'+req.body.result+'");', function (err, result) {
+    connection.query('INSERT INTO abf.modify_attendence (user_id,class_id,request_date,modify_date,contents,result,reason) VALUES ("'+req.body.user_id+'","'+req.body.class_id+'","'+req.body.request_date+'","'+req.body.modify_date+'","'+req.body.contents+'","'+req.body.result+'","'+req.body.reason+'");', function (err, result) {
       sftp.end();
       res.send("upload success")
     })

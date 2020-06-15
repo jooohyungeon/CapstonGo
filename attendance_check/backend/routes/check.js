@@ -5,7 +5,7 @@ var router = express.Router();
 
 router.post('/', function (req, res, next) {
     console.log(req.body)
-    axios.post('http://192.168.0.2:5050/recognize_face', {
+    axios.post('http://192.168.137.79:5050/recognize_face', {
         class_id: req.body.class_id,
         date_id: req.body.date_id,
     })

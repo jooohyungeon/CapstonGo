@@ -12,12 +12,14 @@
           <v-flex>
           </v-flex>
         </v-layout>
-        <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="searchSubj||searchProf" class="elevation-1" @click:row="handleClick">
-        </v-data-table>
+
+          <v-data-table :headers="headers" :items="dataTable" :items-per-page="5" :search="searchSubj||searchProf" class="elevation-1" @click:row="handleClick">
+          </v-data-table>
+
       </v-flex>
       <v-flex v-else-if="isClick==true&&detailLoading==false">
         <v-text-field v-model="searchDetail" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
-        <v-data-table :headers="detailHeaders" :items="dataDetailTable" :items-per-page="5" :search="searchDetail" class="elevation-2">
+        <v-data-table :headers="detailHeaders" :items="dataDetailTable" :items-per-page="5" :search="searchDetail" class="elevation-2" @click:row="handleClickDetail">
           <template v-slot:item.download="{ item }">
             <v-btn @click="download(item)">
               <v-img src="../assets/down.png" width="10px"/>
@@ -45,6 +47,9 @@ export default {
   },
   data () {
     return {
+      show: false,
+
+
       searchSubj: '',
       searchProf: '',
       searchDetail:'',
@@ -86,6 +91,11 @@ export default {
     }
   },
   methods:{
+    handleClickDetail:function(value){
+      
+    },
+
+
     handleClick:function(value){
       this.isClick=true
       this.$http

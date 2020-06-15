@@ -16,10 +16,13 @@
         </v-data-table>
       </v-flex>
       <v-flex v-else-if="isClick==true&&detailLoading==false">
-        <v-flex v-if="checkUpload=='pending'">
-          <div class="form-group ma-10">
-            <input v-model="modifyDay" placeholder="수정 요청 날짜(yyyy-mm-dd)" style="width:300px;"/>
-          </div>
+        <v-flex v-if="checkUpload=='pending'" class="ma-12">
+          <v-date-picker full-width  v-model="date" :allowed-dates="allowedDates" @click:date="dateClicked" max="2020-07-03"> 
+          </v-date-picker>
+          <v-flex class="mt-12">
+            <v-textarea solo name="input-7-4" label="변경사유를 작성해주세요" v-model="text">
+            </v-textarea>
+          </v-flex>
           <v-col>
             <v-file-input v-model="files" color="deep-purple accent-4" counter label="File input" multiple placeholder="Select your files" prepend-icon="mdi-paperclip" outlined :show-size="1000">
               <template v-slot:selection="{ index, text }">
@@ -52,6 +55,8 @@
 
 <script>
 var moment = require('vue-moment');
+var datestore = "123"
+var week = ['일', '월', '화', '수', '목', '금', '토'];
 
 export default {
   name: 'LookUpAttendanceStudent',
@@ -59,6 +64,12 @@ export default {
   },
   data () {
     return {
+      isdatePicked:false,
+      valueStore:'',
+      date:'',
+      datePicked:'',
+      text:'',
+
       searchSubj: '',
       searchProf: '',
       modifyDay:"",
@@ -75,6 +86,7 @@ export default {
         { text: '담당교수', value: 'prof' },
         { text: '강의실', value: 'room' },
         { text: '강의시간', value: 'time' },
+        { text: '강의 요일', value: 'date'},
       ],
       dataTable: [],
       loading:true,
@@ -102,7 +114,13 @@ export default {
     }
   },
   methods:{
+    allowedDates: (value) => datestore.indexOf(week[new Date(value).getDay()]) != -1,
+    dateClicked:function(valueStore){
+      this.datePicked=valueStore
+    },
+
     handleClick:function(value){
+      datestore=value.date
       this.clickedLectureInfo = value
       this.isClick=true
       this.detailLoading=false
@@ -118,9 +136,10 @@ export default {
           user_id:this.$store.state.SetInfo.info.member_id,
           class_id:this.clickedLectureInfo.code,
           request_date: date.format('yyyy-MM-dd'),
-          modify_date:this.modifyDay,
+          modify_date:this.datePicked,
           contents:this.files[0].name,
           result:"pending",
+          reason:this.text,
         })
         .then(response => {
           if(response.data=="upload success"){
@@ -170,7 +189,8 @@ export default {
                     code : this.lectureInfo[i].class_id,
                     prof : this.lectureInfo[i].prof_id,
                     room : this.lectureInfo[i].class_room,
-                    time : this.lectureInfo[i].class_starttime
+                    time : this.lectureInfo[i].class_starttime,
+                    date : this.lectureInfo[i].class_date
                 }
             }
             this.loading=false

@@ -42,7 +42,7 @@
     <v-flex class="grey0form ml-1" md="2" columns>
 
       <v-flex>
-        <v-img src="http://192.168.0.2:8091/?action=stream" style="width:350px;"/>
+        <v-img src="http://192.168.137.79:8091/?action=stream" style="width:350px;"/>
       </v-flex>
 
       <v-flex align-self-center v-if="check=='now'">
