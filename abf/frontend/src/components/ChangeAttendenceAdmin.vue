@@ -131,6 +131,7 @@ export default {
               this.detailLoading=false
             }
           }
+          console.log(response)
         })
         .catch(err => {
           alert("connection error occured1111")
@@ -139,6 +140,7 @@ export default {
       .catch(err => {
         alert("connection error occured2222");
       });
+      
     },
     back:function(){
       this.isClick=false

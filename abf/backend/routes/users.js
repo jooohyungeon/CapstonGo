@@ -20,7 +20,7 @@ router.post('/LogIn', function (req, res, next) {
       res.send({result:"Success", info:result[0]});
     }
     else{
-      res.send("NoPasswNoIDord");
+      res.send("NoPassword");
     }
   })
 });
@@ -77,8 +77,8 @@ router.get('/apply', function (req, res, next) {
 router.get('/modify_attendance', function (req, res, next) {
   connection.query('SELECT * FROM abf.modify_attendence', function (err, result) {
     res.send(result)
+    
   })
-
 });
 
 let client = require("ssh2-sftp-client");

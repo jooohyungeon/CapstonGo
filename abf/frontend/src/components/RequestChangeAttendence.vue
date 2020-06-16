@@ -198,10 +198,12 @@ export default {
         .catch(err => {
             alert("connection error occured1111");
         });
+        
       })
       .catch(err => {
         alert("connection error occured2222");
       });
+      
   },
   created(){
     
