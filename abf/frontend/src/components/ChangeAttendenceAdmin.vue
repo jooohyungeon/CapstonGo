@@ -49,7 +49,7 @@ export default {
   data () {
     return {
       expanded: [],
-      singleExpand: false,
+      singleExpand: true,
 
       searchSubj: '',
       searchProf: '',

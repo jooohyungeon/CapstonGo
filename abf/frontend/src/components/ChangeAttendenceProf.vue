@@ -8,14 +8,17 @@
       </v-flex>
       <v-flex v-else-if="isClick==true&&detailLoading==false">
         <v-text-field v-model="searchDetail" append-icon="mdi-magnify" label="Search" style="width:50%;" class="ml-3"></v-text-field>
-        <v-data-table :headers="detailHeaders" :items="dataDetailTable" :items-per-page="5" :search="searchDetail" class="elevation-2">
+        <v-data-table :headers="detailHeaders" :items="dataDetailTable" :items-per-page="5" :search="searchDetail" :single-expand="singleExpand" :expand.sync="expanded" item-key="id" show-expand class="elevation-2">
+          <template v-slot:expanded-item="{ headers, item }">
+            <td :colspan="headers.length">{{ item.reason }}</td>
+          </template>
           <template v-slot:item.download="{ item }">
-            <v-btn @click="download(item)">
+            <v-btn @click="download(item)" min-width="54px">
               <v-img src="../assets/down.png" width="10px"/>
             </v-btn>
           </template>
           <template v-slot:item.confirm="{ item }">
-            <v-btn @click="confirm(item)">
+            <v-btn @click="confirm(item)" min-width="54px">
               <v-img src="../assets/approve.png" width="10px"/>
             </v-btn>
           </template>
@@ -36,6 +39,9 @@ export default {
   },
   data () {
     return {
+      expanded: [],
+      singleExpand: true,
+
       search:'',
       searchDetail:'',
       temp:0,
@@ -66,6 +72,7 @@ export default {
         { text: '학번', value: 'student' },
         { text: '변경 날짜', value: 'modify' },
         { text: '승인 날짜', value: 'confirm_date' },
+        { text: '사유', value: 'data-table-expand' },
         { text: '증빙자료', value: 'content' },
         { text: '결과', value: 'result' },
         { text: '다운', value: 'download' },
@@ -95,6 +102,7 @@ export default {
               }
 
               this.dataDetailTable[this.temp] = {
+                id : this.temp,
                 code : response.data[i].class_id,
                 student : response.data[i].user_id,
                 name : responseApply.data[index].name,
@@ -103,7 +111,8 @@ export default {
                 confirm_date : response.data[i].confirm_date,
                 content : response.data[i].contents,
                 result : response.data[i].result,
-                confirmer : response.data[i].confirmer_id
+                confirmer : response.data[i].confirmer_id,
+                reason : response.data[i].reason
               }
               this.temp=this.temp+1
             }
