@@ -3,7 +3,7 @@
     <v-card class="ma-12" max-width="1000" outlined>
       <v-list-item three-line>
         <v-layout row>
-          <v-img src="http://192.168.137.79:8091/?action=stream" style="width:250px; height:250px;"/>
+          <v-img src="http://192.168.0.112:8091/?action=stream" style="width:250px; height:250px;"/>
         
           <v-layout column>
               <div class="form-panel one">
