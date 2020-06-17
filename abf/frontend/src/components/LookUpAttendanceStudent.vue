@@ -142,12 +142,12 @@ export default {
             }
             temp = 0
             for(var i=0; i<this.lectureID.length; i++){
-                for(var j=0; j<responseAttendance.data.length; j++){
-                    if(responseAttendance.data[j].class_id==this.lectureID[i]){
-                        this.lectureInfo[temp] = responseAttendance.data[j]
-                        temp = temp + 1
-                    }
+              for(var j=0; j<responseAttendance.data.length; j++){                
+                if(responseAttendance.data[j].class_id==this.lectureID[i]){
+                  this.lectureInfo[temp] = responseAttendance.data[j]
+                  temp = temp + 1
                 }
+              }
             }
             for(var i=0; i<this.lectureInfo.length; i++){
                 this.dataTable[i] = {

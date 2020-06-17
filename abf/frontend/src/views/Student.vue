@@ -17,6 +17,9 @@
             <v-container v-else-if="item.tab=='출결 변경 신청'" class="ma-0 pa-0">
                 <RequestChangeAttendence></RequestChangeAttendence>
             </v-container>
+            <v-container v-else-if="item.tab=='출결 변경 신청 내역'" class="ma-0 pa-0">
+                <RequestChangeAttendenceInfo></RequestChangeAttendenceInfo>
+            </v-container>
             </v-card>
         </v-tab-item>
         </v-tabs-items>
@@ -27,6 +30,7 @@
 <script>
 import LookUpAttendanceStudent from '../components/LookUpAttendanceStudent';
 import RequestChangeAttendence from '../components/RequestChangeAttendence';
+import RequestChangeAttendenceInfo from '../components/RequestChangeAttendenceInfo';
 
 export default {
   name: 'Student',
@@ -34,6 +38,7 @@ export default {
   components: {
     LookUpAttendanceStudent,
     RequestChangeAttendence,
+    RequestChangeAttendenceInfo,
   },
 
   data: () => ({
@@ -41,17 +46,11 @@ export default {
     items: [
       { tab: '출결 현황 조회', content: 'Tab 2 Content' },
       { tab: '출결 변경 신청', content: 'Tab 5 Content' },
+      { tab: '출결 변경 신청 내역', content: 'Tab 6 Content' },
     ],
   }),
   created(){
-    // this.$http
-    //   .get("/api/users")
-    //   .then(response => {
-    //     console.log(response,"받음")
-    //   })
-    //   .catch(err => {
-    //     alert("connection error occured:Student");
-    //   });
+    
   }
 };
 </script>

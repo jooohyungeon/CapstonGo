@@ -64,6 +64,17 @@ export default {
     member_id:'',
 
   }),
+  created(){
+    this.$http
+      .get("/api/users/attendance_check_administer")
+      .then(response => {
+        console.log(response.data)
+        this.$store.commit("SetClass", response.data);
+      })
+      .catch(err => {
+        alert("connection error occured1111")
+      });
+  },
   methods:{
     LogOut: function(){
       this.IsLogin=false
